@@ -1,0 +1,94 @@
+<div class="body">
+  <form novalidate>
+    <div class="row clearfix">
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="form-group">
+            <mat-form-field>
+                <input
+                  #titulo
+                  #foco
+                  matInput
+                  type="text"
+                  name="nome"
+                  class="form-control"
+                  placeholder="Nome"
+                  [(ngModel)]="nomeEquipe"
+                  autofocus
+                  required
+                />                    
+              </mat-form-field>         
+        </div>
+      </div>
+
+      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" *ngIf="habilitarFiltros">
+          <ng-select [items]="medicos"
+                    name="medico"
+                    bindLabel="nome"                        
+                    bindValue="id"
+                    [(ngModel)]="medico"
+                    placeholder="Filtrar por médico"
+                    (onChange)="refresh()">
+          </ng-select>        
+      </div>
+      <div class="col-xs-3 col-sm-3 col-md-2 col-lg-3">
+          <ng-select [items]="tiposDeBusca"
+                    name="tipo"
+                    bindLabel="nome"                        
+                    bindValue="id"
+                    [(ngModel)]="tipoBusca"
+                    placeholder="Filtrar por tipo"
+                    (onChange)="changeTipoBusca()">
+          </ng-select>        
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+        <button type="submit" class="btn btn-primary m-l-15 waves-effect m-t-25" (click)="refresh();">
+          PESQUISAR
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="body table-responsive">
+  <!-- ******************************************************** -->
+  <table class="table table-hover table-striped" [busy]="isTableLoading">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Nome da Equipe</th>
+        <th>Líder</th>        
+        <th>{{l('Actions')}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of lista | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalItems }">
+        <td>{{item.id}}</td>
+        <td>{{item.nome}}</td>
+        <td>{{item.medicoLider.nome}}</td>        
+        <td class="dropdown">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="material-icons">menu</i>
+          </a>
+          <ul class="dropdown-menu pull-right">
+            <li>
+              <a href="javascript:void(0);" class="waves-effect waves-block" (click)="edit(item.id)">
+                <i class="material-icons">create</i>{{l('Edit')}}</a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" class="waves-effect waves-block" (click)="delete(item)">
+                <i class="material-icons">delete_sweep</i>{{l('Delete')}}</a>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- ******************************************************** -->
+
+  <div class="text-align: center;" *ngIf="totalItems > pageSize">
+    <pagination-controls (pageChange)="getDataPage($event)" id="server" previousLabel="Anterior" nextLabel="Próxima"></pagination-controls>
+  </div>
+  <button type="button" data-toggle="modal" class="btn btn-primary btn-circle waves-effect waves-circle waves-float pull-right"
+  (click)="create()">
+            <i class="material-icons">add</i>
+        </button>
+</div>

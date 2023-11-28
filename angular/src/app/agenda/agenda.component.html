@@ -1,0 +1,30 @@
+<!-- <button type="button" data-toggle="modal" class="btn btn-primary btn-circle waves-effect waves-circle waves-float pull-right" (click)="createRole()">
+    <i class="material-icons">add</i>
+</button> -->
+
+<!--eventos: {{ eventos.length }}
+
+<ul>
+  <li *ngFor="let evento of eventos">
+    {{evento.id}} - {{evento.title}}
+  </li>
+</ul> -->
+<!-- <div id="calendar"></div> -->
+<div class="row clearfix">
+  <div class="col-sm-2">
+    <div class="form-group form-float">
+      <mat-form-field>
+        <input matInput [matDatepicker]="pickerData" (focus)="pickerData.open()" name="data"
+          placeholder="Filtrar por data" [(ngModel)]="data" (dateChange)="schedule.gotoDate($event.value)"/>
+        <mat-datepicker-toggle matSuffix [for]="pickerData"></mat-datepicker-toggle>
+        <mat-datepicker #pickerData></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>  
+</div>
+<p-schedule  #schedule [events]="agendamentos" [header]="header" 
+[buttonText]="buttonText" locale="pt-br" 
+(onEventClick)="onEventClick($event)" (onDayClick)="onDayClick($event)"
+(onEventDrop)="onEventDrop($event)"
+(onEventResize)="onEventResize($event)"></p-schedule>
+<create-agenda-component #createAgendaModal (modalSave)="recarregarEventos()"></create-agenda-component>

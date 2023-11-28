@@ -1,0 +1,46 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+  <div class="card">
+    <div class="header">
+      <h2>
+        {{operacao}} Especialidade
+      </h2>
+      <ul class="header-dropdown m-r--5">
+        <li class="dropdown">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                      <i class="material-icons">more_vert</i>
+                  </a>
+          <ul class="dropdown-menu pull-right">
+            <li><a href="javascript:void(0);" class=" waves-effect waves-block">Action</a></li>
+            <li><a href="javascript:void(0);" class=" waves-effect waves-block">Another action</a></li>
+            <li><a href="javascript:void(0);" class=" waves-effect waves-block">Something else here</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="body">
+      <form #formulario="ngForm" novalidate>
+        <div class="form-group form-float form-line" [ngClass]="{'error': !nome.valid}">
+            <mat-form-field>
+              <input matInput
+                  name="nome"
+                  class="form-control"
+                  type="text"
+                  [(ngModel)]="objeto.nome"
+                  [placeholder]="'Nome' | localize"
+                  #nome="ngModel"
+                  #foco />
+          </mat-form-field>           
+        </div>
+        <br>
+        <div class="form-group form-float">
+          <div class="form-line text-right">
+            <button [disabled]="!formulario.form.valid || saving" type="submit" class="btn btn-primary m-t-15 waves-effect" (click)="save();">SALVAR</button>
+            <button [disabled]="saving" type="button" class="btn btn-default  m-l-10 m-t-15 waves-effect" (click)="cancel()">
+                          CANCELAR
+                      </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

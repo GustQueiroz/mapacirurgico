@@ -1,0 +1,21 @@
+.fc-view-container {
+    background-color: white;
+}
+
+.fc-state-default {
+    background-color: #e6e6e6;
+}
+
+.cdk-overlay-container {
+    z-index: 2000;
+}
+
+.ui-state-highlight {
+    background-color: white;
+    
+}
+
+.fc-timeline .fc-head .fc-cell-content {
+    width: 50px;
+}
+

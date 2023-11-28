@@ -1,0 +1,314 @@
+<div bsModal #createRoleModal="bs-modal" class="modal fade" (onShown)="onShown()" tabindex="-1" role="dialog"
+  aria-labelledby="createRoleModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+  <div class="modal-dialog modal-lg">
+    <div #modalContent class="modal-content">
+      <form *ngIf="active" #createRoleForm="ngForm" id="frm_create_role" novalidate (ngSubmit)="save()">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="close()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div class="modal-title">
+            <h4><span>{{ tituloModal }} - {{resourceTitle}}</span></h4>
+            <span class="label label-default">{{agendamento.statusAgendamentoStr}}</span>
+          </div>
+        </div>
+        <!-- <mat-dialog-content style="height: 860px;"> -->
+        <mat-tab-group>
+          <mat-tab [label]="'Dados do agendamento' | localize">
+            <div class="modal-body">
+              <div class="row clearfix">
+                <div class="col-sm-12">
+                  <div class="form-group form-float">
+                    <mat-form-field>
+                      <input #titulo matInput type="text" name="title" class="form-control" placeholder="Título"
+                        [(ngModel)]="title" autofocus required />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row clearfix">
+                <div class="col-sm-3">
+                  <div class="form-group form-float">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="pickerInicio" (focus)="pickerInicio.open()" name="dataInicio"
+                        placeholder="Data Início" [(ngModel)]="dataInicio" />
+                      <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerInicio></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-float">
+                    <mat-form-field>
+                      <input matInput format="HH:mm" type="time" name="horaInicio" placeholder="Horário Início"
+                        [(ngModel)]="horaInicio" />
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-float">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="pickerTermino" (focus)="pickerTermino.open()" name="dataTermino"
+                        placeholder="Data Término" [(ngModel)]="dataTermino" />
+                      <mat-datepicker-toggle matSuffix [for]="pickerTermino"></mat-datepicker-toggle>
+                      <mat-datepicker #pickerTermino></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-float">
+                    <mat-form-field>
+                      <input matInput format="HH:mm" type="time" name="horaTermino" placeholder="Horário Término"
+                        [(ngModel)]="horaTermino" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row clearfix">
+                <div class="col-sm-6">
+                  <div class="form-group form-float">
+                    <ng-select [items]="
+                    medicos | except: [anestesista, auxiliar1, auxiliar2]
+                  " name="medico" bindLabel="nome" [(ngModel)]="medico" loadingText="Buscando..." required
+                      typeToSearchText="Digite o nome do cirurgião" notFoundText="Cirurgião não encontrado"
+                      placeholder="Selecione o cirurgião" (change)="loadEquipesByLider(medico.id)">
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="form-group form-float">
+                    <ng-select [items]="equipes" name="equipe" bindLabel="nome" [(ngModel)]="equipe"
+                      placeholder="Selecione a equipe" loadingText="Buscando..."
+                      typeToSearchText="Digite o nome da equipe" notFoundText="Equipe não encontrada"
+                      (change)="carregaMembros()" (clear)="limparMembros()" (open)="loadEquipesByLider(medico.id)">
+                      <ng-template ng-option-tmp let-item="item">
+                        <strong>{{ item.nome }} </strong> <br />
+                        <small>Membros: </small>
+                        <small *ngFor="let med of item.medicosEquipes; let i = index">
+                          {{ med.medicoNome }}
+                          <span *ngIf="i < item.medicosEquipes.length - 1">, </span>
+                        </small>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="row clearfix">
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <ng-select [items]="anestesistas | except: [medico, auxiliar1, auxiliar2]" name="anestesista"
+                      bindLabel="nome" [(ngModel)]="anestesista" [disabled]="equipe" loadingText="Buscando..."
+                      typeToSearchText="Digite o nome do anestesista" notFoundText="Anestesista não encontrado"
+                      placeholder="Selecione o anestesista">
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <ng-select [items]="medicos | except: [medico, anestesista, auxiliar2]" name="auxiliar1"
+                      bindLabel="nome" [(ngModel)]="auxiliar1" [disabled]="equipe" loadingText="Buscando..."
+                      typeToSearchText="Digite o nome do médico auxiliar 1" notFoundText="Auxiliar não encontrado"
+                      placeholder="Selecione o auxiliar 1">
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <ng-select [items]="medicos | except: [medico, auxiliar1, anestesista]" name="auxiliar2"
+                      bindLabel="nome" [(ngModel)]="auxiliar2" [disabled]="equipe" loadingText="Buscando..."
+                      typeToSearchText="Digite o nome do médico auxiliar 2" notFoundText="Auxiliar não encontrado"
+                      placeholder="Selecione o auxiliar 2">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="row clearfix"></div>
+              <div class="row clearfix">
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <ng-select [items]="pacientes" name="paciente" bindLabel="nome" [(ngModel)]="paciente"
+                      placeholder="Selecione o paciente" required>
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <ng-select [items]="convenios" name="convenio" bindLabel="nome" [(ngModel)]="convenio"
+                      placeholder="Selecione o convênio" required>
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <mat-form-field>
+                      <input matInput type="text" name="autorizacao" class="form-control" placeholder="Autorização"
+                        [(ngModel)]="agendamento.autorizacaoConvenio" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row clearfix">
+                <div class="col-sm-12">
+                  <div class="form-group form-float">
+                    <ng-select [items]="procedimentos$ | async" name="procedimento" bindLabel="codigoDescricaoFormatado" [addTag]="false"
+                      [multiple]="true" [hideSelected]="true" [loading]="procedimentosLoading"
+                      [typeahead]="procedimentoinput$" [(ngModel)]="procedimentosSelecionados" loadingText="Buscando..."
+                      typeToSearchText="Digite o código ou descrição do procedimento"
+                      notFoundText="Procedimento não encontrado" placeholder="Selecione os procedimentos">
+                      <ng-template ng-option-tmp let-item="item">
+                        <small>
+                          <strong>Código: </strong>{{ item.codigo }} -
+                          {{ item.descricao }}
+                        </small>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="row clearfix">
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <ng-select [dropdownPosition]="'top'" [items]="fornecedores" name="fornecedor" bindLabel="razaoSocial" [(ngModel)]="fornecedor"
+                      placeholder="Selecione o fornecedor">
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group form-float" style="margin-top:20px;">
+                    <!-- <ng-select [items]="produtos$ | async" name="produto" bindLabel="nome" [addTag]="false"
+                      [hideSelected]="true" [loading]="produtosLoading" [typeahead]="produtoinput$"
+                      [(ngModel)]="produto" loadingText="Buscando..."
+                      typeToSearchText="Digite o nome do material" notFoundText="Material não encontrado"
+                      placeholder="Selecione o material"
+                      (click)="openDialog()">
+                    </ng-select> -->
+                    <button class="mat-raised-button" color="basic" type="button" (click)="openDialog()">Selecione os materiais</button>
+                  </div>
+                </div>
+                <!-- <div class="col-sm-4">
+                  <div class="col-sm-4">
+                      <div class="form-group form-float">
+                          <mat-form-field>
+                            <input matInput type="number" #qtd step="1" min="1" name="quantidade" class="form-control" placeholder="Qtd."/>
+                          </mat-form-field>
+                        </div>
+                  </div>
+                  <div class="col-sm-8" style="margin-top:20px;">
+                    <button mat-raised-button color="basic" [disabled]="!produto || qtd.value <=0"  type="button" (click)="addProduto(produto, qtd.value)">
+                      Adicionar
+                    </button>                  
+                  </div>
+                </div> -->
+              </div>
+              <div class="body table-responsive">
+                <table class="table table-hover table-striped" [busy]="isTableLoading" *ngIf="lista && lista.length">
+                  <thead>
+                    <tr>
+                      <th>Material</th>
+                      <th>Qtd. escolhida</th>
+                      <th>Qtd. estoque</th>        
+                      <th>{{l('Actions')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of lista | paginate: { id: 'server', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalItems }">
+                      <td>{{item.produtoNome}}</td>
+                      <td>{{item.quantidade}}</td>
+                      <td>{{item.produtoQuantidadeEstoque}}</td>        
+                      <td>
+                        <div>                          
+                          <button *ngIf="id >0" type="button" [color]="item.confirmado ? 'success' : ''" mat-icon-button="" class="mat-icon-button" (click)="confirmarProduto(item)">
+                            <span class="">
+                              <mat-icon aria-label="Confirmar Material" class="mat-icon notranslate material-icons mat-icon-no-color">check</mat-icon>
+                            </span>                            
+                          </button>
+                          <button type="button" color="warn" mat-icon-button="" class="mat-icon-button mat-warn" (click)="removeProduto(item)">
+                              <span class="">
+                                <mat-icon aria-label="Remover Material" class="mat-icon notranslate material-icons mat-icon-no-color">delete</mat-icon>
+                              </span>                            
+                          </button>                          
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+              
+                <div class="text-align: center;" *ngIf="totalItems > pageSize">
+                  <pagination-controls (pageChange)="getDataPage($event)" id="server" previousLabel="Anterior" nextLabel="Próxima"></pagination-controls>
+                </div>                
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab [label]="'Itens de apoio' | localize">
+            <ng-template mat-tab-label>
+                <span [matBadgeHidden]="!itensSelecionados" matBadge="{{itensSelecionados}}" matBadgeOverlap="false">Itens de apoio</span>
+            </ng-template>
+            <div class="modal-body" style="min-height: 600px;">
+              <div class="row clearfix">
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <mat-slide-toggle [checked]="bancoSangue" (change)="setBancoSangue($event)">Banco de sangue</mat-slide-toggle>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <mat-slide-toggle [checked]="vagaUti" (change)="setVagaUti($event)">Vaga de UTI</mat-slide-toggle>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <mat-slide-toggle [checked]="opmeEstoque" (change)="setOpmeEstoque($event)">OPME estoque</mat-slide-toggle>
+                  </div>
+                </div>
+              </div>              
+              <div class="row clearfix">
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                      <mat-slide-toggle [checked]="equipImagem"  (change)="setEquipamento($event)">Equipamentos de imagem</mat-slide-toggle>
+                      <ng-select
+                              [disabled]="!equipImagem"
+                              [items]="equipamentosImagem"
+                              [multiple]="true"
+                              [closeOnSelect]="false"
+                              [clearOnBackspace]="false"
+                              bindLabel="nome"
+                              placeholder="Selecione os equipamentos de imagem"
+                              [(ngModel)]="equipamentosSelecionados"
+                              name="equipamentosSelecionados">
+                      </ng-select>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group form-float">
+                    <mat-slide-toggle [checked]="opmeConsignado" (change)="setOpmeConsignado($event)">OPME consignado</mat-slide-toggle>
+                  </div>
+                </div>
+              </div>              
+            </div>
+          </mat-tab>
+        </mat-tab-group>        
+        <div class="modal-footer">
+            <button mat-raised-button color="warn" type="button" [disabled]="saving" (click)="delete()">
+              Excluir
+            </button>
+            <button mat-raised-button color="basic" type="button" [disabled]="saving" (click)="close()">
+              {{ l("Cancel") }}
+            </button>
+            <button *ngIf="agendamento.id > 0" mat-raised-button color="accent" type="button" [disabled]="saving" (click)="confirmar()">
+              {{ l("Confirmar") }}
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!createRoleForm.form.valid || saving"
+              (click)="save()">
+              {{ l("Save") }}
+            </button>  
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+.ui-dropdown, .mat-form-field {
+    width: 100% !important;    
+}
+.button-row button{
+    margin-right: 8px!important;
+}

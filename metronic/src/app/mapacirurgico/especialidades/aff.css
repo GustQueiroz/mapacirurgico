@@ -1,0 +1,48 @@
+.pagination  {
+    color: red !important;
+    margin: 10px 0 0 0 !important;
+    padding: 0 !important;
+    display: inline-block !important;
+}
+
+.pagination li {
+    padding: 0 !important;
+    margin-right: 5px !important;
+    display: inline-block !important;
+}
+
+.page-item.disabled > a  {
+    color: #716aca !important;
+    background: #edecf8 !important;
+}
+
+.page-item.active > a  {
+    background: #716aca !important;
+    color: #ffffff !important;
+}
+
+.page-item > a {
+    color: #898b96 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    font-size: 1rem !important;
+    line-height: 1rem !important;
+    font-weight: 400 !important;
+    border: none !important;
+    border-top-left-radius: 50% !important;
+    border-top-right-radius: 50% !important;
+    width: 31.5px !important;
+    height: 31.5px !important;
+    line-height: 21px !important;
+    justify-content: center !important;
+}
+
+.page-item > a:hover {
+    color: #716aca !important;
+    background: #edecf8 !important;
+}
+
+

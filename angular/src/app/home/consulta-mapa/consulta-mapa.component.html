@@ -1,0 +1,81 @@
+<mat-form-field>
+    <input matInput placeholder="Pesquisar" #input>
+  </mat-form-field>
+  
+  <div class="mat-elevation-z8">    
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+    </div>
+    <table mat-table [dataSource]="dataSource" matSort>
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Título </th>
+        <td mat-cell *matCellDef="let row"> <a (click)="abrirAgendamento(row)"> {{row.title}} </a></td>
+      </ng-container>
+
+       <!-- Paciente Column -->
+       <ng-container matColumnDef="pacienteNome">
+        <th mat-header-cell *matHeaderCellDef> Paciente </th>
+        <td mat-cell *matCellDef="let row"> {{row.pacienteNome}} </td>
+      </ng-container>
+
+      <!-- Convênio Column -->
+      <ng-container matColumnDef="convenioNome">
+        <th mat-header-cell *matHeaderCellDef> Convênio </th>
+        <td mat-cell *matCellDef="let row"> {{row.convenioNome}} </td>
+      </ng-container>
+
+      <!-- Cirurgião Column -->
+      <ng-container matColumnDef="cirurgiaoNome">
+        <th mat-header-cell *matHeaderCellDef> Cirurgião </th>
+        <td mat-cell *matCellDef="let row"> {{row.cirurgiaoNome}} </td>
+      </ng-container>
+
+      <!-- Recurso Column -->
+      <ng-container matColumnDef="recursoTitle">
+        <th mat-header-cell *matHeaderCellDef> Sala </th>
+        <td mat-cell *matCellDef="let row"> {{row.recursoTitle}} </td>
+      </ng-container>
+  
+      <!-- Start Column -->
+      <ng-container matColumnDef="startStr">
+        <th mat-header-cell *matHeaderCellDef> Início </th>
+        <td mat-cell *matCellDef="let row"> {{row.startStr}} </td>
+      </ng-container>
+  
+      <!-- End Column -->
+      <ng-container matColumnDef="endStr">
+        <th mat-header-cell *matHeaderCellDef> Término </th>
+        <td mat-cell *matCellDef="let row"> {{row.endStr}} </td>
+      </ng-container>
+      <!-- Status Column -->
+      <ng-container matColumnDef="statusAgendamentoStr">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let row" [ngSwitch]="row.statusAgendamentoStr">           
+          <span *ngSwitchCase="'Confirmado'" class="label label-success">{{row.statusAgendamentoStr}}</span>
+          <span *ngSwitchCase="'Cancelado'" class="label label-danger">{{row.statusAgendamentoStr}}</span>
+          <span *ngSwitchDefault class="label label-default">{{row.statusAgendamentoStr}}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td class="dropdown" mat-cell *matCellDef="let row">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <i class="material-icons">menu</i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="javascript:void(0);" class="waves-effect waves-block" (click)="confirmar(row)"><i class="material-icons">check</i>Confirmar</a></li>
+                    <li><a href="javascript:void(0);" class="waves-effect waves-block"><i class="material-icons">delete_sweep</i>Excluir</a></li>
+                </ul>            
+        </td>
+    </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+      </tr>
+    </table>
+  
+    <mat-paginator [length]="totalAgendamentos" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+  <create-agenda-component #createAgendaModal></create-agenda-component>

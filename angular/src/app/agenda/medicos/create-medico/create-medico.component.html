@@ -1,0 +1,142 @@
+<div id="divForm" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+  <div class="card">
+    <div class="header">
+      <h2>
+        {{operacao}} Médico <span *ngIf="objeto.nome">{{' - ' + objeto.nome}}</span>
+      </h2>
+      <ul class="header-dropdown m-r--5">
+        <li class="dropdown">
+          <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+            <i class="material-icons">more_vert</i>
+          </a>
+          <ul class="dropdown-menu pull-right">
+            <li>
+              <a href="javascript:void(0);" class=" waves-effect waves-block">Action</a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" class=" waves-effect waves-block">Another action</a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" class=" waves-effect waves-block">Something else here</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="body">
+      <ul class="nav nav-tabs tab-nav-right" role="tablist">
+        <li role="presentation" class="active">
+          <a href="#edit-user-details" data-toggle="tab">Dados do Médico</a>
+        </li>
+        <li role="presentation" *ngIf="objeto.id > 0">
+          <a href="#edit-user-roles" data-toggle="tab">Equipes</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane animated fadeIn active" id="edit-user-details">
+          <form #formulario="ngForm" novalidate>
+            <div class="form-group form-float form-line">             
+                <mat-form-field>
+                  <input matInput
+                      name="nome"
+                      class="form-control"
+                      type="text"
+                      [(ngModel)]="objeto.nome"
+                      [placeholder]="'Nome' | localize"                      
+                      #foco
+                      #nome="ngModel"
+                      required
+                      maxlength="64" />
+                </mat-form-field>              
+            </div>
+
+            <div class="row clearfix">
+              <div class="col-sm-6">
+                <div class="form-group form-float form-line">                  
+                    <mat-form-field>
+                        <input matInput
+                            name="crm"
+                            class="form-control"
+                            type="text"
+                            [(ngModel)]="objeto.crm"
+                            [placeholder]="'Número CRM' | localize"
+                            required />
+                    </mat-form-field>                  
+                </div>
+              </div>
+              <div class="col-sm-6">
+                  <ng-select [items]="ufs"
+                             [(ngModel)]="objeto.ufConselho"
+                             bindLabel="nome"
+                             bindValue="sigla"
+                             placeholder="Selecione a UF do conselho"
+                             name="ufConselho"
+                             required>
+                  </ng-select>                
+              </div>               
+            </div>
+
+            <div class="row clearfix">
+              <div class="col-sm-6">
+                <div class="form-group form-float form-line">
+                  <mat-form-field>
+                      <input matInput
+                          name="telefone"
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="objeto.telefone"
+                          [placeholder]="'Telefone' | localize"                                                
+                          required />                          
+                  </mat-form-field>                  
+                </div>
+              </div>
+              <div class="col-sm-6">
+                  <ng-select [items]="especialidades"
+                              [(ngModel)]="especialidade"
+                              bindLabel="nome"
+                              placeholder="Selecione a especialidade"
+                              name="especialidade">
+                  </ng-select>                
+              </div>
+            </div>
+            <div class="row clearfix">
+              <div class="col-sm-12">
+                <mat-slide-toggle labelPosition="before"  [checked]="objeto.anestesista" (change)="setAnestesista($event)">Médico anestesista?</mat-slide-toggle>
+              </div> 
+            </div>
+            <div class="row clearfix">
+              <div class="col-sm-12">
+                <div class="form-group form-float form-line">
+                  <mat-form-field>
+                      <input matInput
+                          name="endereco"
+                          class="form-control"
+                          type="text"
+                          [(ngModel)]="objeto.endereco"
+                          [placeholder]="'Endereço' | localize" />
+                  </mat-form-field>                  
+                </div>
+              </div>
+            </div>
+            <div class="form-group form-float">
+              <div class="form-line text-right">               
+                <div class="button-row">
+                    <button mat-raised-button color="basic" type="button" [disabled]="saving" (click)="cancel()">
+                            {{ l("Cancel") }}
+                    </button>
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!formulario.form.valid || saving"
+                        (click)="save()">
+                        {{ l("Save") }}
+                    </button>  
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div role="tabpanel" class="tab-pane animated fadeIn" id="edit-user-roles" *ngIf="objeto.id > 0">
+          <app-equipes [medico]="objeto" [habilitarFiltros]="false"></app-equipes>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
